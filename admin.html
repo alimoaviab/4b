@@ -1,0 +1,688 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Admin Dashboard | 4Bit Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=2">
+  <style>
+    :root {
+      --adm-primary: #064b91;
+      --adm-accent: #078747;
+      --adm-bg: #f0f4f9;
+      --adm-card: #ffffff;
+      --adm-text: #1e293b;
+      --adm-muted: #64748b;
+      --adm-border: #e2e8f0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      background: var(--adm-bg);
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: var(--adm-text);
+      margin: 0;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* SVG Icon System */
+    .svg-icon {
+      width: 16px;
+      height: 16px;
+      display: inline-block;
+      vertical-align: -2px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+    .svg-icon.lg {
+      width: 20px;
+      height: 20px;
+      vertical-align: -4px;
+    }
+    .svg-icon.xl {
+      width: 26px;
+      height: 26px;
+    }
+
+    /* Top Bar */
+    .adm-top {
+      background: linear-gradient(100deg, #063d76 0%, #078747 100%);
+      color: #fff;
+      padding: 14px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 15px rgba(6, 61, 118, 0.15);
+    }
+    .adm-top-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font: 800 17px 'Manrope', sans-serif;
+      letter-spacing: -0.3px;
+    }
+    .adm-top-brand .badge-mongo {
+      background: rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .adm-top-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .adm-top-actions a {
+      color: #e0f2fe;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .adm-top-actions a:hover { color: #fff; text-decoration: underline; }
+
+    /* Layout Containers */
+    .adm-wrap {
+      max-width: 440px;
+      margin: 50px auto;
+      padding: 0 16px;
+    }
+    .adm-wide {
+      max-width: 1240px;
+      margin: 28px auto 60px;
+      padding: 0 20px;
+    }
+
+    /* Cards */
+    .adm-card {
+      background: var(--adm-card);
+      border: 1px solid var(--adm-border);
+      border-radius: 18px;
+      box-shadow: 0 12px 35px rgba(23, 61, 98, 0.08);
+      overflow: hidden;
+    }
+    .adm-card-pad { padding: 32px; }
+    .adm-card h2 {
+      font: 800 24px 'Manrope', sans-serif;
+      margin: 0 0 8px;
+      color: #073c78;
+    }
+    .adm-card p.subtitle {
+      font-size: 13px;
+      color: var(--adm-muted);
+      line-height: 1.6;
+      margin: 0 0 22px;
+    }
+
+    /* Forms */
+    form.adm-form { display: grid; gap: 15px; }
+    form.adm-form label {
+      display: grid;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #334155;
+    }
+    form.adm-form input,
+    form.adm-form select,
+    form.adm-form textarea {
+      width: 100%;
+      border: 1px solid #cbd5e1;
+      border-radius: 9px;
+      padding: 11px 13px;
+      font: 14px 'DM Sans', sans-serif;
+      color: #0f172a;
+      background: #f8fafc;
+      transition: border-color .18s, box-shadow .18s;
+    }
+    form.adm-form input:focus,
+    form.adm-form select:focus,
+    form.adm-form textarea:focus {
+      outline: none;
+      border-color: #0284c7;
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+      background: #fff;
+    }
+    form.adm-form textarea { min-height: 90px; resize: vertical; }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 9px;
+      font: 700 13px 'DM Sans', sans-serif;
+      cursor: pointer;
+      border: none;
+      transition: all .2s ease;
+      text-decoration: none;
+    }
+    .btn.primary {
+      background: linear-gradient(135deg, #064b91 0%, #077943 100%);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(6, 75, 145, 0.22);
+    }
+    .btn.primary:hover {
+      opacity: 0.94;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(6, 75, 145, 0.3);
+    }
+    .btn.ghost {
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+    }
+    .btn.ghost:hover { background: #e2e8f0; color: #0f172a; }
+    .btn.danger { background: #ef4444; color: #fff; }
+    .btn.danger:hover { background: #dc2626; }
+    .btn.success { background: #10b981; color: #fff; }
+    .btn.success:hover { background: #059669; }
+
+    /* Dashboard Bar & Tabs */
+    .adm-bar {
+      padding: 18px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--adm-border);
+      background: #ffffff;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .adm-bar-info b { font: 800 19px 'Manrope', sans-serif; color: #0f172a; }
+    .adm-bar-info small { display: block; color: var(--adm-muted); font-size: 12px; margin-top: 2px; }
+
+    .adm-tabs {
+      display: flex;
+      gap: 6px;
+      padding: 10px 22px;
+      border-bottom: 1px solid var(--adm-border);
+      background: #f8fafc;
+      overflow-x: auto;
+    }
+    .tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: none;
+      background: transparent;
+      padding: 10px 18px;
+      border-radius: 9px;
+      font: 700 13px 'DM Sans', sans-serif;
+      color: #64748b;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all .15s ease;
+    }
+    .tab:hover { background: #e2e8f0; color: #1e293b; }
+    .tab.active {
+      background: #064b91;
+      color: #ffffff;
+      box-shadow: 0 4px 10px rgba(6, 75, 145, 0.25);
+    }
+    .tab-badge {
+      background: rgba(255, 255, 255, 0.25);
+      padding: 2px 7px;
+      border-radius: 12px;
+      font-size: 11px;
+    }
+    .tab:not(.active) .tab-badge {
+      background: #e2e8f0;
+      color: #475569;
+    }
+
+    .adm-body { padding: 24px; min-height: 480px; }
+
+    /* Stat Cards */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 13px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.02);
+    }
+    .stat-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 11px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+    .stat-icon.blue { background: #e0f2fe; color: #0284c7; }
+    .stat-icon.yellow { background: #fef3c7; color: #d97706; }
+    .stat-icon.green { background: #dcfce7; color: #16a34a; }
+    .stat-icon.red { background: #fee2e2; color: #dc2626; }
+    .stat-val { font: 800 24px 'Manrope', sans-serif; color: #0f172a; line-height: 1.1; }
+    .stat-lbl { font-size: 12px; font-weight: 600; color: var(--adm-muted); margin-top: 3px; }
+
+    /* Filters / Search Bar */
+    .filter-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+    .filter-pills {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .fpill {
+      border: 1px solid #cbd5e1;
+      background: #fff;
+      color: #475569;
+      padding: 6px 13px;
+      border-radius: 20px;
+      font: 700 12px 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .fpill.active, .fpill:hover {
+      background: #0f172a;
+      color: #fff;
+      border-color: #0f172a;
+    }
+    .search-box {
+      position: relative;
+      min-width: 260px;
+      flex: 1;
+      max-width: 360px;
+    }
+    .search-box input {
+      width: 100%;
+      border: 1px solid #cbd5e1;
+      border-radius: 20px;
+      padding: 8px 14px 8px 36px;
+      font: 13px 'DM Sans', sans-serif;
+      background: #fff;
+    }
+    .search-box .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+    }
+
+    /* Tables */
+    .table-wrap {
+      overflow-x: auto;
+      background: #ffffff;
+      border: 1px solid var(--adm-border);
+      border-radius: 12px;
+    }
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      min-width: 780px;
+      text-align: left;
+    }
+    .admin-table th {
+      background: #f8fafc;
+      color: #475569;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      font-weight: 700;
+      padding: 13px 14px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .admin-table td {
+      padding: 13px 14px;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+      color: #1e293b;
+    }
+    .admin-table tr:hover td { background: #f8fafc; }
+
+    /* Status Pills */
+    .pill-status {
+      display: inline-block;
+      border-radius: 16px;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: capitalize;
+    }
+    .pill-status.pending { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+    .pill-status.accepted { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+    .pill-status.rejected { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+
+    .app-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font: 800 13px 'Manrope', monospace;
+      color: #0369a1;
+      background: #e0f2fe;
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px dashed #7dd3fc;
+      margin-top: 3px;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+    }
+
+    /* Action Buttons in tables */
+    .action-group {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .action-btn {
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      border-radius: 7px;
+      padding: 6px 10px;
+      font: 700 11px 'DM Sans', sans-serif;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: #334155;
+      transition: all .15s;
+    }
+    .action-btn:hover { background: #f1f5f9; }
+    .action-btn.accept { color: #15803d; border-color: #86efac; background: #f0fdf4; }
+    .action-btn.accept:hover { background: #16a34a; color: #fff; }
+    .action-btn.reject { color: #b91c1c; border-color: #fca5a5; background: #fef2f2; }
+    .action-btn.reject:hover { background: #dc2626; color: #fff; }
+    .action-btn.primary { color: #0369a1; border-color: #7dd3fc; background: #f0f9ff; }
+    .action-btn.primary:hover { background: #0284c7; color: #fff; }
+
+    /* Subtitles and sections */
+    .section-title {
+      font: 800 18px 'Manrope', sans-serif;
+      color: #0f172a;
+      margin: 0 0 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Split grids for Editors */
+    .two-col-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media(max-width: 900px) {
+      .two-col-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Messages */
+    .msg {
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: none;
+    }
+    .msg.err { display: block; background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+    .msg.ok { display: block; background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+
+    /* Modals */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+    }
+    .modal-content {
+      background: #ffffff;
+      border-radius: 18px;
+      width: 100%;
+      max-width: 580px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+      padding: 26px;
+    }
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 14px;
+      margin-bottom: 18px;
+    }
+    .modal-head h3 { margin: 0; font: 800 18px 'Manrope', sans-serif; color: #0f172a; }
+    .modal-close {
+      border: none;
+      background: #f1f5f9;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-size: 16px;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      color: #64748b;
+    }
+    .modal-close:hover { background: #e2e8f0; color: #0f172a; }
+
+    /* Result Card Print Container */
+    .printable-card {
+      border: 3px double #064b91;
+      padding: 24px;
+      border-radius: 14px;
+      background: #ffffff;
+      color: #0f172a;
+    }
+    .printable-card-head {
+      text-align: center;
+      border-bottom: 2px solid #064b91;
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+    }
+    .printable-card-head h2 { font: 800 22px 'Manrope', sans-serif; color: #064b91; margin: 0; }
+    .printable-card-head p { font-size: 12px; color: #475569; margin: 4px 0 0; }
+
+    .kv-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px 18px;
+      font-size: 13px;
+      margin-bottom: 18px;
+    }
+    .kv-item small { display: block; color: #64748b; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+    .kv-item b { font-size: 14px; color: #0f172a; }
+
+    /* Posts card list */
+    .post-card-item {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .post-card-item h4 { margin: 0 0 6px; font: 800 16px 'Manrope', sans-serif; color: #064b91; }
+    .post-meta { font-size: 12px; color: #64748b; margin-bottom: 8px; }
+    .post-body-text { font-size: 13px; color: #334155; line-height: 1.6; white-space: pre-wrap; }
+
+    /* Courses Grid */
+    .course-admin-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .course-adm-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 13px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .course-adm-card .c-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .course-adm-card .c-icon-badge {
+      width: 44px;
+      height: 44px;
+      background: #f1f5f9;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      color: #064b91;
+    }
+    .course-adm-card h4 { margin: 0; font: 800 15px 'Manrope', sans-serif; color: #0f172a; }
+    .course-adm-card p { font-size: 12px; color: #64748b; line-height: 1.5; margin: 0; flex: 1; }
+
+    /* Password Generator Meter */
+    .gen-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .meter { height: 6px; border-radius: 6px; background: #e2e8f0; overflow: hidden; flex: 1; min-width: 90px; }
+    .meter i { display: block; height: 100%; width: 0; transition: width .25s, background .25s; }
+    .meter-txt { font-size: 11px; font-weight: 700; color: #64748b; min-width: 60px; }
+    .rules { font-size: 11px; color: #8190a1; margin: 0 !important; }
+
+    .security-note {
+      margin-top: 24px;
+      padding: 16px 20px;
+      border-radius: 12px;
+      background: #fefce8;
+      border: 1px solid #fef08a;
+      font-size: 13px;
+    }
+    .security-note b { color: #854d0e; }
+    .security-note ul { margin: 8px 0 0; padding-left: 20px; color: #713f12; line-height: 1.7; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="adm-top">
+    <div class="adm-top-brand">
+      <svg class="svg-icon lg" viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+      <span>4Bit Academy — Admin Portal</span>
+      <span class="badge-mongo">
+        <svg class="svg-icon" style="width:12px;height:12px" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        MongoDB Atlas Live
+      </span>
+    </div>
+    <div class="adm-top-actions">
+      <a href="/" target="_blank" rel="noopener">
+        <svg class="svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg>
+        View Live Website &rarr;
+      </a>
+    </div>
+  </header>
+
+  <!-- Login Card (Hidden when authenticated) -->
+  <main class="adm-wrap" id="authWrap">
+    <div class="adm-card adm-card-pad" id="vLogin">
+      <h2>Administrator Sign In</h2>
+      <p class="subtitle">Direct staff login. Enter your admin credentials.</p>
+      <form class="adm-form" id="fLogin">
+        <label>
+          Username
+          <input name="username" required autocomplete="username" autofocus placeholder="admin" value="admin">
+        </label>
+        <label>
+          Password
+          <input name="password" type="password" required autocomplete="current-password" placeholder="admin" value="admin">
+        </label>
+        <div class="msg" id="mLogin"></div>
+        <button class="btn primary" style="margin-top:6px">
+          Sign In to Dashboard &rarr;
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <!-- Dashboard Container (Shown when authenticated) -->
+  <div class="adm-wide" id="dash" hidden>
+    <div class="adm-card">
+      <div class="adm-bar">
+        <div class="adm-bar-info">
+          <b>Academy Management Console</b>
+          <small>Manage Student Admissions, Examination Results, Announcements, Courses & Security</small>
+        </div>
+        <button id="btnOut" class="btn ghost">
+          <svg class="svg-icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+          Sign Out
+        </button>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="adm-tabs" role="tablist">
+        <button class="tab active" data-tab="applications">
+          <svg class="svg-icon" viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+          Admissions <span class="tab-badge" id="bCountApps">0</span>
+        </button>
+        <button class="tab" data-tab="results">
+          <svg class="svg-icon" viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+          Results <span class="tab-badge" id="bCountResults">0</span>
+        </button>
+        <button class="tab" data-tab="posts">
+          <svg class="svg-icon" viewBox="0 0 24 24"><path d="m3 11 18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+          Posts &amp; News <span class="tab-badge" id="bCountPosts">0</span>
+        </button>
+        <button class="tab" data-tab="courses">
+          <svg class="svg-icon" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10M6 10h10"/></svg>
+          Courses <span class="tab-badge" id="bCountCourses">0</span>
+        </button>
+        <button class="tab" data-tab="settings">
+          <svg class="svg-icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Security &amp; Telemetry
+        </button>
+      </nav>
+
+      <!-- Dynamic Tab Content Body -->
+      <section class="adm-body" id="tabBody">
+        <p style="text-align:center;color:#64748b;padding:40px 0">Loading Academy Dashboard data...</p>
+      </section>
+    </div>
+  </div>
+
+  <!-- Modal Container for Details, Assign IDs, Print Result -->
+  <div id="modalContainer" hidden></div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

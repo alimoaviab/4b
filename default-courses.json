@@ -1,0 +1,321 @@
+[
+ {
+  "name": "Office Management Course",
+  "short": "Office Management",
+  "icon": "📊",
+  "c1": "#2874e8",
+  "c2": "#27c4d4",
+  "desc": "Build practical skills for modern office administration and workplace productivity.",
+  "adv": [
+   "Work confidently in offices, shops and companies",
+   "Prepare professional letters, sheets and presentations",
+   "Manage records, emails and schedules efficiently",
+   "A strong base for CIT, DIT and data entry work"
+  ],
+  "topics": [
+   "Computer basics and typing",
+   "MS Word — letters, CVs and mail merge",
+   "MS Excel — formulas, tables and charts",
+   "MS PowerPoint — presentations",
+   "Email, internet and office communication",
+   "Records, filing and final office project"
+  ],
+  "images": [
+   "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=900&q=80",
+   "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80",
+   "https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=900&q=80",
+   "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=900&q=80"
+  ],
+  "article": ""
+ },
+ {
+  "name": "Graphic Designing Course",
+  "short": "Graphic Designing",
+  "icon": "🎨",
+  "c1": "#8b5cf6",
+  "c2": "#ec4899",
+  "desc": "Turn creative ideas into professional visual designs for print and digital platforms.",
+  "adv": [
+   "Create logos, posts and banners for real businesses",
+   "Build a portfolio for jobs and freelancing",
+   "Learn industry-standard design tools",
+   "Start earning through local clients and online marketplaces"
+  ],
+  "topics": [
+   "Design principles — colour, layout, typography",
+   "Photoshop — editing and social media posts",
+   "Illustrator — logos and vector artwork",
+   "Canva — quick branding and marketing material",
+   "Print design — cards, flyers and banners",
+   "Portfolio and client project"
+  ],
+  "images": [
+   "https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=900&q=80",
+   "https://images.unsplash.com/photo-1545235617-9465d2a55698?auto=format&fit=crop&w=900&q=80",
+   "https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&w=900&q=80",
+   "https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&fit=crop&w=900&q=80"
+  ],
+  "article": ""
+ },
+ {
+  "name": "Web Development Course",
+  "short": "Web Development",
+  "icon": "💻",
+  "c1": "#0f766e",
+  "c2": "#2dd4bf",
+  "desc": "Learn how websites are structured, styled and made interactive.",
+  "adv": [
+   "Build real, responsive websites",
+   "Learn skills in demand for jobs and freelancing",
+   "Understand how the web works end to end",
+   "Publish your own portfolio website"
+  ],
+  "topics": [
+   "Web basics and HTML5",
+   "CSS3, Flexbox and Grid",
+   "Responsive design for mobile",
+   "JavaScript fundamentals and the DOM",
+   "Forms, APIs and mini projects",
+   "Hosting, publishing and final website"
+  ],
+  "images": [
+   "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=900&q=80",
+   "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=900&q=80",
+   "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80",
+   "https://images.unsplash.com/photo-1555062837-6c6d5f9e9f6f?auto=format&fit=crop&w=900&q=80"
+  ],
+  "article": ""
+ },
+ {
+  "name": "SEO Course",
+  "short": "SEO",
+  "icon": "🔎",
+  "c1": "#ea580c",
+  "c2": "#fbbf24",
+  "desc": "Understand how to improve website visibility and organic search performance.",
+  "adv": [
+   "Help websites rank higher on Google",
+   "Offer SEO services to local businesses",
+   "Understand keywords, content and traffic",
+   "Useful for freelancing and digital marketing jobs"
+  ],
+  "topics": [
+   "How search engines work",
+   "Keyword research and search intent",
+   "On-page SEO and content optimisation",
+   "Technical SEO and site speed",
+   "Link building and local SEO",
+   "Google Analytics, Search Console and reporting"
+  ],
+  "images": [
+   "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=900&q=80",
+   "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=900&q=80",
+   "https://images.unsplash.com/photo-1676299081847-824916de030a?auto=format&fit=crop&w=900&q=80",
+   "https://images.unsplash.com/photo-1686191128892-3b4f1c1e4b8a?auto=format&fit=crop&w=900&q=80"
+  ],
+  "article": ""
+ },
+ {
+  "name": "Trading Course",
+  "short": "Trading",
+  "icon": "📈",
+  "c1": "#14532d",
+  "c2": "#4ade80",
+  "desc": "Learn market terminology, chart reading and risk management. Trading involves risk; profits are not guaranteed.",
+  "adv": [
+   "Understand market basics and chart reading",
+   "Learn risk management before using real money",
+   "Practise on demo accounts",
+   "Make disciplined, informed decisions (no profit guarantee)"
+  ],
+  "topics": [
+   "Market basics and terminology",
+   "Candlesticks and chart patterns",
+   "Trend, support and resistance",
+   "Indicators and trading strategies",
+   "Risk management and trading psychology",
+   "Demo trading practice"
+  ],
+  "images": [
+   "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=900&q=80",
+   "https://images.unsplash.com/photo-1642790106117-e829e14a795f?auto=format&fit=crop&w=900&q=80",
+   "https://images.unsplash.com/photo-1535320903710-d993d3d77d29?auto=format&fit=crop&w=900&q=80",
+   "https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?auto=format&fit=crop&w=900&q=80"
+  ],
+  "article": ""
+ },
+ {
+  "name": "CIT Course",
+  "short": "CIT",
+  "icon": "🧩",
+  "c1": "#475569",
+  "c2": "#94a3b8",
+  "desc": "Certificate in Information Technology — a practical foundation in computers and everyday IT skills.",
+  "adv": [
+   "Strong IT foundation for beginners",
+   "Useful for jobs, higher courses and daily computing",
+   "Certificate-level practical training",
+   "Pathway to DIT and advanced IT courses"
+  ],
+  "topics": [
+   "Computer fundamentals and Windows",
+   "Typing and MS Office",
+   "Internet, email and online safety",
+   "Basic hardware and software",
+   "File management and printing",
+   "Practical assignments and final test"
+  ],
+  "images": [
+   "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=900&q=80",
+   "https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&w=900&q=80",
+   "https://images.unsplash.com/photo-1574377111022-6e2b2c1f6f0d?auto=format&fit=crop&w=900&q=80",
+   "https://images.unsplash.com/photo-1492619375914-88005aa9e8fb?auto=format&fit=crop&w=900&q=80"
+  ],
+  "article": ""
+ },
+ {
+  "name": "DIT Course",
+  "short": "DIT",
+  "icon": "🖥️",
+  "c1": "#1d4ed8",
+  "c2": "#60a5fa",
+  "desc": "Diploma in Information Technology — a broad foundation in IT and everyday computing.",
+  "adv": [
+   "Broader diploma-level IT knowledge",
+   "Prepares you for office, IT support and technical roles",
+   "Theory combined with hands-on practice",
+   "Builds confidence for advanced study"
+  ],
+  "topics": [
+   "Computer fundamentals and operating systems",
+   "Advanced MS Office",
+   "Internet and networking basics",
+   "Introduction to web and programming basics",
+   "Database basics",
+   "Projects and final assessment"
+  ],
+  "images": [
+   "https://images.unsplash.com/photo-1432888622747-4eb9a8efeb07?auto=format&fit=crop&w=900&q=80",
+   "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=900&q=80",
+   "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=900&q=80",
+   "https://images.unsplash.com/photo-1562577309-4932fdd64cd1?auto=format&fit=crop&w=900&q=80"
+  ],
+  "article": ""
+ },
+ {
+  "name": "CCA Course",
+  "short": "CCA",
+  "icon": "⌨️",
+  "c1": "#be123c",
+  "c2": "#fb7185",
+  "desc": "Certificate in Computer Applications — core computer applications and essential digital tools.",
+  "adv": [
+   "Learn essential computer applications quickly",
+   "Ideal for students and job seekers",
+   "Build confidence with digital tools",
+   "Foundation for CIT, DIT and office roles"
+  ],
+  "topics": [
+   "Computer basics and file management",
+   "MS Word",
+   "MS Excel",
+   "MS PowerPoint",
+   "Internet, email and cloud tools",
+   "Practical exercises and final test"
+  ],
+  "images": [
+   "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80",
+   "https://images.unsplash.com/photo-1455390582262-044c7803a2df?auto=format&fit=crop&w=900&q=80",
+   "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=900&q=80",
+   "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=900&q=80"
+  ],
+  "article": ""
+ },
+ {
+  "name": "Assistant IT Assistant Course",
+  "short": "IT Assistant",
+  "icon": "🛠️",
+  "c1": "#4338ca",
+  "c2": "#818cf8",
+  "desc": "An introduction to day-to-day IT support, troubleshooting and user assistance.",
+  "adv": [
+   "Learn day-to-day IT support skills",
+   "Fix common hardware and software problems",
+   "Prepare for help-desk and technician roles",
+   "Help offices and customers with practical solutions"
+  ],
+  "topics": [
+   "Computer hardware components",
+   "Installing Windows and software",
+   "Troubleshooting common problems",
+   "Networking and Wi-Fi basics",
+   "Antivirus, backup and safe computing",
+   "Help-desk basics and practical lab"
+  ],
+  "images": [
+   "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80",
+   "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=900&q=80",
+   "https://images.unsplash.com/photo-1581092921461-eab62e97a780?auto=format&fit=crop&w=900&q=80",
+   "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=900&q=80"
+  ],
+  "article": ""
+ },
+ {
+  "name": "Freelancing Course",
+  "short": "Freelancing",
+  "icon": "🌐",
+  "c1": "#0369a1",
+  "c2": "#38bdf8",
+  "desc": "Learn to present your skills, build a portfolio and understand freelance marketplace workflows.",
+  "adv": [
+   "Learn to earn online from Pakistan",
+   "Build a profile, portfolio and winning proposals",
+   "Learn client communication and project delivery",
+   "Avoid scams and work professionally"
+  ],
+  "topics": [
+   "Freelancing basics and choosing a skill",
+   "Profile and portfolio creation",
+   "Fiverr / Upwork workflow",
+   "Proposals and client communication",
+   "Pricing, delivery and reviews",
+   "Payments, scam awareness and growth"
+  ],
+  "images": [
+   "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=900&q=80",
+   "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=900&q=80",
+   "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=900&q=80",
+   "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=900&q=80"
+  ],
+  "article": ""
+ },
+ {
+  "name": "Data Entry Course",
+  "short": "Data Entry",
+  "icon": "⌨️",
+  "c1": "#7c3aed",
+  "c2": "#c084fc",
+  "desc": "Develop accurate data entry, spreadsheet and digital record-keeping skills.",
+  "adv": [
+   "Improve typing speed and accuracy",
+   "Work with Excel and Sheets professionally",
+   "Suitable for office and online data jobs",
+   "Learn data privacy and quality checking"
+  ],
+  "topics": [
+   "Typing practice and speed building",
+   "MS Word formatting",
+   "Excel data entry, sorting and validation",
+   "Google Sheets and online forms",
+   "Accuracy and quality checks",
+   "Practical data-entry projects"
+  ],
+  "images": [
+   "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80",
+   "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=900&q=80",
+   "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=900&q=80",
+   "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=900&q=80"
+  ],
+  "article": ""
+ }
+]
