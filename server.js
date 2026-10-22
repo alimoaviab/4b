@@ -474,7 +474,10 @@ async function handleRequest(req, res) {
 
   try {
     const u = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
-    const p = u.pathname;
+    let p = u.pathname;
+    if (u.searchParams.has('path')) {
+      p = '/api/' + String(u.searchParams.get('path')).replace(/^\/+|\/+$/g, '');
+    }
 
     // API Routing
     if (p.startsWith('/api/')) {

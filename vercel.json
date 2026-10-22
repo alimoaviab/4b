@@ -7,7 +7,7 @@
     },
     {
       "source": "/api/:path*",
-      "destination": "/api/index.js"
+      "destination": "/api/index.js?path=:path*"
     }
   ],
   "headers": [
