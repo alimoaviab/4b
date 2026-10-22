@@ -48,13 +48,21 @@ async function initDb() {
   if (initPromise) return initPromise;
 
   initPromise = (async () => {
-    console.log(`[database] 🍃 Connecting to MongoDB Atlas (${DB_NAME})...`);
-    client = new MongoClient(MONGO_URI, {
-      serverSelectionTimeoutMS: 12000,
-      connectTimeoutMS: 12000,
-      socketTimeoutMS: 30000,
-      family: 4, // Force IPv4 for reliable connection
-    });
+    let uri = MONGO_URI;
+    if (!uri.includes('retryWrites')) {
+      uri += (uri.includes('?') ? '&' : '?') + 'retryWrites=true&w=majority';
+    }
+
+    const clientOpts = {
+      serverSelectionTimeoutMS: 15000,
+      connectTimeoutMS: 15000,
+      socketTimeoutMS: 45000,
+    };
+    if (process.platform === 'darwin') {
+      clientOpts.family = 4;
+    }
+
+    client = new MongoClient(uri, clientOpts);
 
     await client.connect();
     db = client.db(DB_NAME);
