@@ -449,9 +449,14 @@ const STATIC_ROUTES = {
   '/og-image.png': 'og-image.png',
 };
 
-// ─── HTTP Server ─────────────────────────────────────────────────────────────
-const server = http.createServer(async (req, res) => {
-  // CORS Headers for seamless local testing
+// ─── HTTP Request Handler (Vercel & Local) ──────────────────────────────────
+async function handleRequest(req, res) {
+  // Ensure DB connection in Serverless environments
+  if (!db.checkDbReady()) {
+    try { await db.initDb(); } catch (e) { console.error('[db init error]', e.message); }
+  }
+
+  // CORS Headers for seamless local & remote testing
   const origin = req.headers.origin || '*';
   res.setHeader('Access-Control-Allow-Origin', origin);
   res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -496,8 +501,11 @@ const server = http.createServer(async (req, res) => {
     // Static File Serving
     const filename = STATIC_ROUTES[p];
     if (filename && (req.method === 'GET' || req.method === 'HEAD')) {
-      const filePath = path.join(ROOT, filename);
-      if (fs.existsSync(filePath)) {
+      const publicPath = path.join(ROOT, 'public', filename);
+      const rootPath = path.join(ROOT, filename);
+      const filePath = fs.existsSync(publicPath) ? publicPath : (fs.existsSync(rootPath) ? rootPath : null);
+
+      if (filePath) {
         const ext = path.extname(filename);
         res.writeHead(200, {
           'Content-Type': MIME[ext] || 'application/octet-stream',
@@ -517,7 +525,9 @@ const server = http.createServer(async (req, res) => {
       send(res, 500, { error: 'Internal Server Error' });
     }
   }
-});
+}
+
+const server = http.createServer(handleRequest);
 
 // ─── Start Server ────────────────────────────────────────────────────────────
 async function start() {
@@ -562,10 +572,15 @@ process.on('unhandledRejection', (reason) => {
   console.error('[unhandledRejection]', reason);
 });
 
+// Start local dev server only when executed directly via node server.js
 if (require.main === module) {
   try { process.stdin.resume(); } catch {}
   setInterval(() => {}, 10000);
   start();
 }
 
-module.exports = { server, api, db };
+// Export request handler function as default export for Vercel
+module.exports = handleRequest;
+module.exports.server = server;
+module.exports.api = api;
+module.exports.db = db;
