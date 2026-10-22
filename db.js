@@ -22,8 +22,8 @@ const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 
-const MONGO_URI = process.env.MONGODB_URI || 'mongodb+srv://4dadmin:4badmin@cluster0.rzbr0ll.mongodb.net/';
-const DB_NAME = process.env.MONGODB_DB || '4bitacademy';
+const MONGO_URI = process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb+srv://4dadmin:4badmin@cluster0.rzbr0ll.mongodb.net/';
+const DB_NAME = process.env.MONGODB_DB || process.env.MONGO_DB || '4bitacademy';
 
 let client = null;
 let db = null;
@@ -74,8 +74,8 @@ async function initDb() {
     colAdmin = db.collection('admin');
     colSessions = db.collection('sessions');
 
-    // ─── Create Indexes ─────────────────────────────────────────────
-    await Promise.all([
+    // ─── Create Indexes (Non-blocking background) ─────────────────────
+    Promise.all([
       colApps.createIndex({ applicationNo: 1 }, { unique: true }),
       colApps.createIndex({ rollNo: 1 }),
       colApps.createIndex({ registrationNo: 1 }),
@@ -85,7 +85,7 @@ async function initDb() {
       colAdmin.createIndex({ username: 1 }, { unique: true }),
       colSessions.createIndex({ token: 1 }, { unique: true }),
       colSessions.createIndex({ expireAt: 1 }, { expireAfterSeconds: 0, sparse: true }),
-    ]);
+    ]).catch(e => console.warn('[database index note]', e.message));
 
     // ─── Automatic Data Migration from old kvstore ───────────────────
     try {
@@ -154,9 +154,9 @@ async function initDb() {
       console.warn('[database] Note on legacy migration:', migErr.message);
     }
 
-    // ─── Initial Admin Seeding ───────────────────────────────────────
-    const adminUser = process.env.ADMIN_USER || 'admin';
-    const adminPass = process.env.ADMIN_PASSWORD || 'Admin@1234Local!';
+    // ─── Initial Admin Seeding & Env Sync ───────────────────────────
+    const adminUser = (process.env.ADMIN_USER || 'admin').toLowerCase();
+    const adminPass = process.env.ADMIN_PASSWORD || process.env.ADMIN_DEFAULT_PASSWORD || 'admin';
     const existingAdmin = await colAdmin.findOne({ username: adminUser });
 
     if (!existingAdmin) {
@@ -169,6 +169,20 @@ async function initDb() {
         createdAt: new Date(),
       });
       console.log(`[database] 👤 Admin account seeded: ${adminUser}`);
+    } else {
+      const targetPass = process.env.ADMIN_PASSWORD || process.env.ADMIN_DEFAULT_PASSWORD;
+      if (targetPass) {
+        const currentExpectedHash = hashPw(targetPass, existingAdmin.salt);
+        if (currentExpectedHash !== existingAdmin.hash) {
+          const newSalt = crypto.randomBytes(16).toString('hex');
+          const newHash = hashPw(targetPass, newSalt);
+          await colAdmin.updateOne(
+            { username: adminUser },
+            { $set: { salt: newSalt, hash: newHash, updatedAt: new Date() } }
+          );
+          console.log(`[database] 🔑 Admin password synchronized with ADMIN_PASSWORD env variable`);
+        }
+      }
     }
 
     // ─── Initial Courses Seeding ─────────────────────────────────────

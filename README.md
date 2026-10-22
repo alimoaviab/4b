@@ -27,7 +27,7 @@ Institute of 4B Information Technology (Abdul Hakim, Multan Road, Punjab).
 ## 🔑 Admin Login Credentials
 
 - **Username**: `admin`
-- **Password**: `Admin@1234Local!`
+- **Password**: `admin`
 *(Direct password login — Email OTP is completely disabled as requested).*
 
 ---
