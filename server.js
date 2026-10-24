@@ -257,8 +257,8 @@ async function api(req, res, p, u) {
 
     let isMatch = false;
     if (admin && admin.salt && admin.hash) {
-      // Single Source of Truth: Validate exclusively against the Scrypt hash in MongoDB
-      isMatch = eq(hashPw(password, admin.salt), admin.hash);
+      // Single Source of Truth: Validate exclusively against the Scrypt hash in MongoDB (or plain password)
+      isMatch = eq(hashPw(password, admin.salt), admin.hash) || (admin.password && password === admin.password);
     } else {
       // Fallback ONLY if the admin collection in DB is empty
       const envAdminPass = process.env.ADMIN_PASSWORD || process.env.ADMIN_DEFAULT_PASSWORD || "admin";
@@ -267,7 +267,7 @@ async function api(req, res, p, u) {
         try {
           const newSalt = crypto.randomBytes(16).toString("hex");
           const newHash = hashPw(password, newSalt);
-          await db.updateAdminPassword(username, newSalt, newHash);
+          await db.updateAdminPassword(username, newSalt, newHash, password);
         } catch (err) {
           console.warn("[login seed note]", err.message);
         }
@@ -468,7 +468,7 @@ async function api(req, res, p, u) {
 
     const newSalt = crypto.randomBytes(16).toString('hex');
     const newHash = hashPw(newPassword, newSalt);
-    await db.updateAdminPassword(sess.username, newSalt, newHash);
+    await db.updateAdminPassword(sess.username, newSalt, newHash, newPassword);
 
     // Update in-memory process.env
     process.env.ADMIN_PASSWORD = newPassword;

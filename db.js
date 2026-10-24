@@ -164,6 +164,7 @@ async function initDb() {
       const hash = hashPw(adminPass, salt);
       await colAdmin.insertOne({
         username: adminUser,
+        password: adminPass,
         salt,
         hash,
         createdAt: new Date(),
@@ -177,7 +178,7 @@ async function initDb() {
         const newHash = hashPw(targetPass, newSalt);
         await colAdmin.updateOne(
           { username: adminUser },
-          { $set: { salt: newSalt, hash: newHash, updatedAt: new Date() } }
+          { $set: { username: adminUser, password: targetPass, salt: newSalt, hash: newHash, updatedAt: new Date() } }
         );
         console.log(`[database] 🔑 Admin password force-reset via FORCE_RESET_ADMIN`);
       }
@@ -452,12 +453,21 @@ async function getAdmin(username) {
   return colAdmin.findOne({ username: u }, { projection: { _id: 0 } });
 }
 
-async function updateAdminPassword(username, salt, hash) {
+async function updateAdminPassword(username, salt, hash, plainPassword) {
   await getDb();
   const u = String(username || 'admin').toLowerCase().trim();
+  const updateDoc = {
+    username: u,
+    salt,
+    hash,
+    updatedAt: new Date()
+  };
+  if (plainPassword) {
+    updateDoc.password = String(plainPassword);
+  }
   const res = await colAdmin.updateOne(
     { username: u },
-    { $set: { username: u, salt, hash, updatedAt: new Date() } },
+    { $set: updateDoc },
     { upsert: true }
   );
   // Also clear all active sessions for security

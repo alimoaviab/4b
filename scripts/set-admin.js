@@ -44,6 +44,7 @@ async function setAdmin() {
     {
       $set: {
         username: targetUser,
+        password: targetPass,
         salt,
         hash,
         updatedAt: new Date(),
