@@ -448,18 +448,20 @@ async function deletePost(id) {
 
 async function getAdmin(username) {
   await getDb();
-  return colAdmin.findOne({ username }, { projection: { _id: 0 } });
+  const u = String(username || 'admin').toLowerCase().trim();
+  return colAdmin.findOne({ username: u }, { projection: { _id: 0 } });
 }
 
 async function updateAdminPassword(username, salt, hash) {
   await getDb();
+  const u = String(username || 'admin').toLowerCase().trim();
   const res = await colAdmin.updateOne(
-    { username },
-    { $set: { salt, hash, updatedAt: new Date() } },
+    { username: u },
+    { $set: { username: u, salt, hash, updatedAt: new Date() } },
     { upsert: true }
   );
   // Also clear all active sessions for security
-  await colSessions.deleteMany({ username });
+  await colSessions.deleteMany({ username: u });
   return res.matchedCount > 0 || res.upsertedCount > 0;
 }
 

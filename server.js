@@ -244,7 +244,7 @@ async function api(req, res, p, u) {
 
   // 7. Admin Login (Direct Password Verification — No OTP)
   if (route === "POST /api/admin/login") {
-    const username = t(b.username, 40).toLowerCase();
+    const username = t(b.username, 40).toLowerCase().trim() || "admin";
     const password = String(b.password || "").slice(0, 200);
 
     // Only block extreme brute-force attempts from a single IP (50+ failed attempts per 15 mins)
@@ -254,27 +254,32 @@ async function api(req, res, p, u) {
     }
 
     const admin = await db.getAdmin(username);
-    const envAdminPass = process.env.ADMIN_PASSWORD || process.env.ADMIN_DEFAULT_PASSWORD;
-    const isHashMatch = admin && admin.salt && admin.hash && eq(hashPw(password, admin.salt), admin.hash);
-    const isEnvMatch = envAdminPass && password === envAdminPass;
 
-    if (!isHashMatch && !isEnvMatch) {
+    let isMatch = false;
+    if (admin && admin.salt && admin.hash) {
+      // Single Source of Truth: Validate exclusively against the Scrypt hash in MongoDB
+      isMatch = eq(hashPw(password, admin.salt), admin.hash);
+    } else {
+      // Fallback ONLY if the admin collection in DB is empty
+      const envAdminPass = process.env.ADMIN_PASSWORD || process.env.ADMIN_DEFAULT_PASSWORD || "admin";
+      if (password === envAdminPass) {
+        isMatch = true;
+        try {
+          const newSalt = crypto.randomBytes(16).toString("hex");
+          const newHash = hashPw(password, newSalt);
+          await db.updateAdminPassword(username, newSalt, newHash);
+        } catch (err) {
+          console.warn("[login seed note]", err.message);
+        }
+      }
+    }
+
+    if (!isMatch) {
       const now = Date.now();
       let f = hits.get("lf:" + ip);
       if (!f || now > f.t) hits.set("lf:" + ip, { c: 1, t: now + 900000 });
       else f.c++;
       return send(res, 401, { error: "Incorrect username or password." });
-    }
-
-    // If direct match succeeded and hash in DB is different, synchronize the DB record
-    if (isEnvMatch && !isHashMatch) {
-      try {
-        const newSalt = crypto.randomBytes(16).toString("hex");
-        const newHash = hashPw(password, newSalt);
-        await db.updateAdminPassword(username, newSalt, newHash);
-      } catch (err) {
-        console.warn("[login pass sync note]", err.message);
-      }
     }
 
     // Reset rate limiter on successful authentication
@@ -451,10 +456,12 @@ async function api(req, res, p, u) {
     }
 
     const admin = await db.getAdmin(sess.username);
-    const envAdminPass = process.env.ADMIN_PASSWORD || process.env.ADMIN_DEFAULT_PASSWORD;
-    const isCurrentValid = (admin && admin.salt && admin.hash && eq(hashPw(current, admin.salt), admin.hash)) ||
-                          (envAdminPass && current === envAdminPass);
+    if (!admin || !admin.salt || !admin.hash) {
+      return send(res, 404, { error: 'Administrator account not found in database.' });
+    }
 
+    // Current password MUST match the hash stored in MongoDB Atlas
+    const isCurrentValid = eq(hashPw(current, admin.salt), admin.hash);
     if (!isCurrentValid) {
       return send(res, 401, { error: 'Current password is incorrect.' });
     }
