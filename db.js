@@ -167,21 +167,19 @@ async function initDb() {
         salt,
         hash,
         createdAt: new Date(),
+        updatedAt: new Date(),
       });
       console.log(`[database] 👤 Admin account seeded: ${adminUser}`);
-    } else {
+    } else if (process.env.FORCE_RESET_ADMIN === 'true') {
       const targetPass = process.env.ADMIN_PASSWORD || process.env.ADMIN_DEFAULT_PASSWORD;
       if (targetPass) {
-        const currentExpectedHash = hashPw(targetPass, existingAdmin.salt);
-        if (currentExpectedHash !== existingAdmin.hash) {
-          const newSalt = crypto.randomBytes(16).toString('hex');
-          const newHash = hashPw(targetPass, newSalt);
-          await colAdmin.updateOne(
-            { username: adminUser },
-            { $set: { salt: newSalt, hash: newHash, updatedAt: new Date() } }
-          );
-          console.log(`[database] 🔑 Admin password synchronized with ADMIN_PASSWORD env variable`);
-        }
+        const newSalt = crypto.randomBytes(16).toString('hex');
+        const newHash = hashPw(targetPass, newSalt);
+        await colAdmin.updateOne(
+          { username: adminUser },
+          { $set: { salt: newSalt, hash: newHash, updatedAt: new Date() } }
+        );
+        console.log(`[database] 🔑 Admin password force-reset via FORCE_RESET_ADMIN`);
       }
     }
 

@@ -29,7 +29,14 @@ const ICONS = {
   key: `<svg class="svg-icon" viewBox="0 0 24 24"><path d="m21 2-2 2m-1.5 1.5L16 7l-1.5 1.5M16 4l4 4-9.5 9.5a5 5 0 1 1-4-4L16 4z"/></svg>`,
   plus: `<svg class="svg-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`,
   folder: `<svg class="svg-icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>`,
-  bolt: `<svg class="svg-icon" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`
+  bolt: `<svg class="svg-icon" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`,
+  settings: `<svg class="svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`,
+  eye: `<svg class="svg-icon" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>`,
+  eyeOff: `<svg class="svg-icon" viewBox="0 0 24 24"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/></svg>`,
+  user: `<svg class="svg-icon" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+  lock: `<svg class="svg-icon" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`,
+  shield: `<svg class="svg-icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+  checkCircle: `<svg class="svg-icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`
 };
 
 let state = { apps: [], posts: [], courses: [] };
@@ -131,9 +138,10 @@ function calcStrength(p) {
 // ─── Data Loading & Dashboard Initialization ────────────────────────────────
 async function loadDashData(tabToOpen = curTab) {
   try {
-    const [dashData, coursesData] = await Promise.all([
+    const [dashData, coursesData, meData] = await Promise.all([
       api("/api/admin/apps"),
-      api("/api/courses").catch(() => ({ courses: [] }))
+      api("/api/courses").catch(() => ({ courses: [] })),
+      api("/api/admin/me").catch(() => null)
     ]);
 
     state = {
@@ -141,7 +149,9 @@ async function loadDashData(tabToOpen = curTab) {
       posts: Array.isArray(dashData.posts) ? dashData.posts : [],
       courses: Array.isArray(coursesData.courses) && coursesData.courses.length
         ? coursesData.courses
-        : (Array.isArray(dashData.courses) ? dashData.courses : [])
+        : (Array.isArray(dashData.courses) ? dashData.courses : []),
+      adminUsername: (meData && meData.username) || state.adminUsername || localStorage.getItem("4b_user") || "admin",
+      adminUpdatedAt: (meData && meData.updatedAt) || state.adminUpdatedAt || null
     };
 
     updateBadgeCounts();
@@ -698,97 +708,202 @@ function renderCoursesTab(root) {
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
-// TAB 5: SECURITY & SYSTEM TELEMETRY
+// TAB 5: SETTINGS & SECURITY (ترتیبات اور پاس ورڈ کی تبدیلی)
 // ═════════════════════════════════════════════════════════════════════════════
 function renderSettingsTab(root) {
   const apps = state.apps || [];
   const resultsCount = apps.filter(a => a.marks !== "" && a.marks !== undefined && a.marks !== null).length;
+  const adminUser = state.adminUsername || localStorage.getItem("4b_user") || "admin";
+  const updatedDateStr = state.adminUpdatedAt
+    ? new Date(state.adminUpdatedAt).toLocaleString('en-GB', { timeZone: 'Asia/Karachi', dateStyle: 'medium', timeStyle: 'short' })
+    : 'Default system credentials';
 
   root.innerHTML = `
+    <div style="margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <div>
+        <h2 style="font:800 22px 'Manrope',sans-serif;margin:0;color:#0f172a;display:flex;align-items:center;gap:10px">
+          ${ICONS.settings}
+          <span>Portal Settings &amp; Security</span>
+        </h2>
+        <p style="margin:4px 0 0;font-size:13px;color:#64748b">
+          Manage administrator login credentials, security preferences, and view academy portal telemetry.
+        </p>
+      </div>
+      <span class="pill-status accepted" style="padding:6px 14px;font-size:12px;display:inline-flex;align-items:center;gap:6px">
+        ${ICONS.shield} Master Administrator
+      </span>
+    </div>
+
     <div class="two-col-grid" style="align-items:start">
-      <!-- Change Password Card -->
+      <!-- 1. Change Password Card (Main Focus) -->
       <div class="adm-card adm-card-pad" style="border:1px solid #cbd5e1">
         <h3 class="section-title">
-          ${ICONS.security}
+          ${ICONS.key}
           <span>Change Administrator Password</span>
         </h3>
         <p style="font-size:13px;color:#64748b;margin:0 0 18px">
-          Update the master administrative password for this portal. You will need to log in again after changing it.
+          Update the master administrative password for this portal. Changes are encrypted using Scrypt (64-byte) and permanently synced with MongoDB Atlas.
         </p>
 
         <form class="adm-form" id="fPass" data-pw>
           <label>
             Current Password *
-            <input name="current" type="password" required autocomplete="current-password" placeholder="Enter current password">
+            <div class="pw-input-wrap">
+              <input name="current" id="inCurPass" type="password" required autocomplete="current-password" placeholder="Enter current password">
+              <button type="button" class="pw-toggle-btn" data-toggle="inCurPass" title="Toggle password visibility">
+                ${ICONS.eye}
+              </button>
+            </div>
           </label>
 
           <label>
             New Password *
-            <input name="newPassword" id="inNewPass" type="password" required minlength="3" autocomplete="new-password" placeholder="Enter new password">
+            <div class="pw-input-wrap">
+              <input name="newPassword" id="inNewPass" type="password" required minlength="4" autocomplete="new-password" placeholder="Enter new strong password (min. 4 chars)">
+              <button type="button" class="pw-toggle-btn" data-toggle="inNewPass" title="Toggle password visibility">
+                ${ICONS.eye}
+              </button>
+            </div>
           </label>
 
           <label>
             Confirm New Password *
-            <input name="confirmPassword" type="password" required minlength="3" autocomplete="new-password" placeholder="Re-enter new password">
+            <div class="pw-input-wrap">
+              <input name="confirmPassword" id="inConfPass" type="password" required minlength="4" autocomplete="new-password" placeholder="Re-enter new password to verify">
+              <button type="button" class="pw-toggle-btn" data-toggle="inConfPass" title="Toggle password visibility">
+                ${ICONS.eye}
+              </button>
+            </div>
+            <div id="pwMatchStatus" class="pw-match-badge"></div>
           </label>
 
-          <div class="gen-row">
-            <button type="button" class="btn ghost" id="btnGenPass" style="font-size:12px">${ICONS.key} Generate Secure Password</button>
-            <button type="button" class="btn ghost" id="btnCopyPass" style="font-size:12px">${ICONS.copy} Copy</button>
-            <div class="meter"><i id="meterBar"></i></div>
-            <span class="meter-txt" id="meterTxt"></span>
+          <!-- Password Generator & Strength -->
+          <div style="background:#f8fafc;padding:14px;border-radius:10px;border:1px solid #e2e8f0;display:grid;gap:10px">
+            <div class="gen-row">
+              <button type="button" class="btn ghost" id="btnGenPass" style="font-size:12px;padding:6px 12px">
+                ${ICONS.key} Generate Strong Password
+              </button>
+              <button type="button" class="btn ghost" id="btnCopyPass" style="font-size:12px;padding:6px 12px">
+                ${ICONS.copy} Copy
+              </button>
+              <div class="meter"><i id="meterBar"></i></div>
+              <span class="meter-txt" id="meterTxt"></span>
+            </div>
+            <div style="font-size:11px;color:#64748b;line-height:1.5">
+              • Must be at least 4 characters long.<br>
+              • Must differ from current password.<br>
+              • Mix of uppercase, lowercase, numbers, and symbols recommended.
+            </div>
           </div>
 
           <div class="msg" id="mPass"></div>
 
-          <button class="btn primary" style="margin-top:8px">
-            Update Admin Password &rarr;
+          <button class="btn primary" id="btnSubmitPass" type="submit" style="margin-top:8px">
+            ${ICONS.save} Update Admin Password &rarr;
           </button>
         </form>
       </div>
 
-      <!-- Telemetry & Database Health -->
-      <div class="adm-card adm-card-pad" style="border:1px solid #cbd5e1">
-        <h3 class="section-title">
-          ${ICONS.bolt}
-          <span>Academy System Telemetry</span>
-        </h3>
-        <div style="display:grid;gap:12px;font-size:13px">
-          <div style="padding:14px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center">
-            <span>Primary Database</span>
-            <span style="font-weight:800;color:#16a34a;display:inline-flex;align-items:center;gap:6px">
-              <span style="width:8px;height:8px;border-radius:50%;background:#16a34a"></span> MongoDB Atlas Live
-            </span>
+      <!-- 2. Admin Profile & System Telemetry -->
+      <div>
+        <!-- Profile Card -->
+        <div class="adm-card adm-card-pad" style="border:1px solid #cbd5e1;margin-bottom:20px">
+          <div class="admin-profile-head">
+            <div class="admin-avatar">
+              ${ICONS.user}
+            </div>
+            <div class="admin-profile-meta">
+              <h4>${esc(adminUser)}</h4>
+              <p>Super Administrator (Portal Master)</p>
+            </div>
           </div>
-          <div style="padding:14px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center">
-            <span>Total Admission Records</span>
-            <b>${apps.length} students</b>
+
+          <div class="settings-subcard">
+            <h5>${ICONS.lock} Account Security</h5>
+            <div class="settings-row">
+              <span>Admin Username</span>
+              <span>${esc(adminUser)}</span>
+            </div>
+            <div class="settings-row">
+              <span>Password Status</span>
+              <span style="color:#16a34a;display:inline-flex;align-items:center;gap:4px">
+                ${ICONS.check} Scrypt Encrypted (64-byte)
+              </span>
+            </div>
+            <div class="settings-row">
+              <span>Password Last Changed</span>
+              <span id="lblPassUpdated" style="color:#0369a1">${esc(updatedDateStr)}</span>
+            </div>
+            <div class="settings-row">
+              <span>Session Duration</span>
+              <span>7 Days (Sliding Window)</span>
+            </div>
           </div>
-          <div style="padding:14px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center">
-            <span>Declared Result Cards</span>
-            <b>${resultsCount} records</b>
-          </div>
-          <div style="padding:14px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center">
-            <span>Live Academy Courses</span>
-            <b>${(state.courses || []).length} courses</b>
-          </div>
-          <div style="padding:14px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center">
-            <span>Announcements &amp; News</span>
-            <b>${(state.posts || []).length} published</b>
-          </div>
-          <div style="padding:14px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center">
-            <span>Active Admin User</span>
-            <span class="pill-status accepted">admin</span>
+
+          <div class="settings-subcard" style="margin-bottom:0">
+            <h5>${ICONS.admissions} Academy Profile</h5>
+            <div class="settings-row">
+              <span>Institute Name</span>
+              <span>Institute of 4B IT</span>
+            </div>
+            <div class="settings-row">
+              <span>Principal / Head</span>
+              <span>Muhammad Javed</span>
+            </div>
+            <div class="settings-row">
+              <span>Contact Phone</span>
+              <span>0301 6571821</span>
+            </div>
+            <div class="settings-row">
+              <span>Official Email</span>
+              <span>4bitacademy151@gmail.com</span>
+            </div>
+            <div class="settings-row">
+              <span>Campus Address</span>
+              <span>Abdul Hakim, Multan Road</span>
+            </div>
           </div>
         </div>
 
-        <div class="security-note">
-          <b>Security Architecture Active</b>
-          <ul>
-            <li>Direct password hashing (Scrypt 64-byte derivation + salt).</li>
-            <li>No OTP dependency: Fast direct login for authorized staff.</li>
-            <li>Brute-force protection &amp; 30-minute idle session sliding window.</li>
-          </ul>
+        <!-- Telemetry Card -->
+        <div class="adm-card adm-card-pad" style="border:1px solid #cbd5e1">
+          <h3 class="section-title">
+            ${ICONS.bolt}
+            <span>System Telemetry &amp; Database Health</span>
+          </h3>
+          <div style="display:grid;gap:10px;font-size:13px">
+            <div style="padding:12px 14px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center">
+              <span>Primary Database</span>
+              <span style="font-weight:800;color:#16a34a;display:inline-flex;align-items:center;gap:6px">
+                <span style="width:8px;height:8px;border-radius:50%;background:#16a34a"></span> MongoDB Atlas Live
+              </span>
+            </div>
+            <div style="padding:12px 14px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center">
+              <span>Total Admission Records</span>
+              <b>${apps.length} students</b>
+            </div>
+            <div style="padding:12px 14px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center">
+              <span>Declared Result Cards</span>
+              <b>${resultsCount} records</b>
+            </div>
+            <div style="padding:12px 14px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center">
+              <span>Live Courses</span>
+              <b>${(state.courses || []).length} courses</b>
+            </div>
+            <div style="padding:12px 14px;background:#f8fafc;border-radius:10px;border:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center">
+              <span>Announcements &amp; News</span>
+              <b>${(state.posts || []).length} published</b>
+            </div>
+          </div>
+
+          <div class="security-note">
+            <b>Portal Security Safeguards Active</b>
+            <ul>
+              <li>Direct Scrypt 64-byte derivation + salt cryptographic protection.</li>
+              <li>Protection against brute-force login attacks.</li>
+              <li>Session persistence with automatic slide expiration.</li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
@@ -1230,26 +1345,47 @@ document.addEventListener("input", e => {
   }
 });
 
-// 7. Password Generator & Strength in Security Tab
+// 7. Password Generator, Eye Toggles & Strength in Settings Tab
 document.addEventListener("click", e => {
-  if (e.target.id === "btnGenPass") {
-    const pw = genPassword(20);
+  // Eye Toggle Button
+  const toggleBtn = e.target.closest(".pw-toggle-btn");
+  if (toggleBtn) {
+    const targetId = toggleBtn.dataset.toggle;
+    const input = document.getElementById(targetId);
+    if (input) {
+      const isPass = input.type === "password";
+      input.type = isPass ? "text" : "password";
+      toggleBtn.innerHTML = isPass ? ICONS.eyeOff : ICONS.eye;
+    }
+    return;
+  }
+
+  // Password Generator
+  if (e.target.id === "btnGenPass" || e.target.closest("#btnGenPass")) {
+    const pw = genPassword(14);
     const inPass = $("#inNewPass");
-    const form = e.target.closest("form");
-    if (inPass && form) {
+    const cPass = $("#inConfPass");
+    if (inPass) {
       inPass.type = "text";
       inPass.value = pw;
-      const cPass = form.querySelector("[name=confirmPassword]");
       if (cPass) { cPass.type = "text"; cPass.value = pw; }
       updatePasswordMeter(pw);
+      const status = $("#pwMatchStatus");
+      if (status) {
+        status.className = "pw-match-badge match";
+        status.innerHTML = `${ICONS.check} Passwords match`;
+      }
     }
   }
-  if (e.target.id === "btnCopyPass") {
+
+  // Copy Password
+  if (e.target.id === "btnCopyPass" || e.target.closest("#btnCopyPass")) {
     const inPass = $("#inNewPass");
-    if (inPass && inPass.value) {
+    const targetBtn = e.target.id === "btnCopyPass" ? e.target : e.target.closest("#btnCopyPass");
+    if (inPass && inPass.value && targetBtn) {
       navigator.clipboard.writeText(inPass.value).then(() => {
-        e.target.textContent = "Copied ✓";
-        setTimeout(() => e.target.innerHTML = `${ICONS.copy} Copy`, 1500);
+        targetBtn.textContent = "Copied ✓";
+        setTimeout(() => targetBtn.innerHTML = `${ICONS.copy} Copy`, 1500);
       }).catch(() => {});
     }
   }
@@ -1268,6 +1404,22 @@ function updatePasswordMeter(pw) {
 document.addEventListener("input", e => {
   if (e.target.name === "newPassword") {
     updatePasswordMeter(e.target.value);
+  }
+  if (e.target.id === "inNewPass" || e.target.id === "inConfPass") {
+    const newPass = $("#inNewPass") ? $("#inNewPass").value : "";
+    const confPass = $("#inConfPass") ? $("#inConfPass").value : "";
+    const status = $("#pwMatchStatus");
+    if (status && confPass) {
+      if (newPass === confPass) {
+        status.className = "pw-match-badge match";
+        status.innerHTML = `${ICONS.check} Passwords match`;
+      } else {
+        status.className = "pw-match-badge mismatch";
+        status.innerHTML = `${ICONS.cross} Passwords do not match`;
+      }
+    } else if (status) {
+      status.textContent = "";
+    }
   }
 });
 
@@ -1364,23 +1516,61 @@ document.addEventListener("submit", async e => {
   // F. Change Password Form
   if (f.id === "fPass") {
     e.preventDefault();
+    const btnSubmit = $("#btnSubmitPass");
+    const origHtml = btnSubmit ? btnSubmit.innerHTML : "";
+
     if (fd.newPassword !== fd.confirmPassword) {
       showMsg("mPass", "New password and confirmation do not match.");
       return;
     }
-    if (!fd.newPassword || fd.newPassword.length < 3) {
-      showMsg("mPass", "Password must be at least 3 characters.");
+    if (!fd.newPassword || fd.newPassword.length < 4) {
+      showMsg("mPass", "New password must be at least 4 characters long.");
       return;
     }
+    if (fd.current === fd.newPassword) {
+      showMsg("mPass", "New password must be different from current password.");
+      return;
+    }
+
+    if (btnSubmit) {
+      btnSubmit.disabled = true;
+      btnSubmit.textContent = "Updating password...";
+    }
+
     try {
-      await api("/api/admin/password", {
+      const res = await api("/api/admin/password", {
         current: fd.current,
         newPassword: fd.newPassword
       });
-      showLoginView();
-      showMsg("mLogin", "Password updated successfully. Please sign in with your new password.", true);
+
+      if (res && res.token) {
+        localStorage.setItem("4b_token", res.token);
+      }
+      if (res && res.updatedAt) {
+        state.adminUpdatedAt = res.updatedAt;
+        const lbl = $("#lblPassUpdated");
+        if (lbl) {
+          lbl.textContent = new Date(res.updatedAt).toLocaleString('en-GB', {
+            timeZone: 'Asia/Karachi',
+            dateStyle: 'medium',
+            timeStyle: 'short'
+          });
+        }
+      }
+
+      f.reset();
+      const status = $("#pwMatchStatus");
+      if (status) status.textContent = "";
+      updatePasswordMeter("");
+
+      showMsg("mPass", "✅ Password updated successfully! Your new password is now active.", true);
     } catch (err) {
-      showMsg("mPass", err.message);
+      showMsg("mPass", err.message || "Failed to update password.");
+    } finally {
+      if (btnSubmit) {
+        btnSubmit.disabled = false;
+        btnSubmit.innerHTML = origHtml;
+      }
     }
     return;
   }

@@ -254,11 +254,11 @@ async function api(req, res, p, u) {
     }
 
     const admin = await db.getAdmin(username);
-    const envAdminPass = process.env.ADMIN_PASSWORD || process.env.ADMIN_DEFAULT_PASSWORD || "admin";
-    const isDirectMatch = (password === envAdminPass) || (password === "admin");
+    const envAdminPass = process.env.ADMIN_PASSWORD || process.env.ADMIN_DEFAULT_PASSWORD;
     const isHashMatch = admin && admin.salt && admin.hash && eq(hashPw(password, admin.salt), admin.hash);
+    const isEnvMatch = envAdminPass && password === envAdminPass;
 
-    if (!isHashMatch && !isDirectMatch) {
+    if (!isHashMatch && !isEnvMatch) {
       const now = Date.now();
       let f = hits.get("lf:" + ip);
       if (!f || now > f.t) hits.set("lf:" + ip, { c: 1, t: now + 900000 });
@@ -267,7 +267,7 @@ async function api(req, res, p, u) {
     }
 
     // If direct match succeeded and hash in DB is different, synchronize the DB record
-    if (isDirectMatch && !isHashMatch) {
+    if (isEnvMatch && !isHashMatch) {
       try {
         const newSalt = crypto.randomBytes(16).toString("hex");
         const newHash = hashPw(password, newSalt);
@@ -308,7 +308,13 @@ async function api(req, res, p, u) {
 
   // Current session check
   if (route === 'GET /api/admin/me') {
-    return send(res, 200, { ok: true, username: sess.username }, refreshCookie);
+    const admin = await db.getAdmin(sess.username);
+    return send(res, 200, {
+      ok: true,
+      username: sess.username,
+      updatedAt: admin && admin.updatedAt ? admin.updatedAt : null,
+      createdAt: admin && admin.createdAt ? admin.createdAt : null,
+    }, refreshCookie);
   }
 
   // Admin Dashboard Data: Applications, Posts, Courses
@@ -428,21 +434,65 @@ async function api(req, res, p, u) {
 
   // Change Admin Password
   if (route === 'POST /api/admin/password') {
-    const admin = await db.getAdmin(sess.username);
-    if (!admin || !eq(hashPw(String(b.current || ''), admin.salt), admin.hash)) {
-      return send(res, 401, { error: 'Current password is incorrect.' });
+    const current = String(b.current || '');
+    const newPassword = String(b.newPassword || '');
+
+    if (!current) {
+      return send(res, 400, { error: 'Current password is required.' });
     }
-    if (!strong(b.newPassword)) {
-      return send(res, 400, {
-        error: 'New password must have at least 10 characters with upper, lower, and numbers.',
-      });
+    if (!newPassword || newPassword.length < 4) {
+      return send(res, 400, { error: 'New password must be at least 4 characters long.' });
+    }
+    if (newPassword.length > 128) {
+      return send(res, 400, { error: 'New password must not exceed 128 characters.' });
+    }
+    if (current === newPassword) {
+      return send(res, 400, { error: 'New password cannot be the same as your current password.' });
+    }
+
+    const admin = await db.getAdmin(sess.username);
+    const envAdminPass = process.env.ADMIN_PASSWORD || process.env.ADMIN_DEFAULT_PASSWORD;
+    const isCurrentValid = (admin && admin.salt && admin.hash && eq(hashPw(current, admin.salt), admin.hash)) ||
+                          (envAdminPass && current === envAdminPass);
+
+    if (!isCurrentValid) {
+      return send(res, 401, { error: 'Current password is incorrect.' });
     }
 
     const newSalt = crypto.randomBytes(16).toString('hex');
-    const newHash = hashPw(b.newPassword, newSalt);
+    const newHash = hashPw(newPassword, newSalt);
     await db.updateAdminPassword(sess.username, newSalt, newHash);
 
-    return send(res, 200, { ok: true }, { 'Set-Cookie': cookie('', 0) });
+    // Update in-memory process.env
+    process.env.ADMIN_PASSWORD = newPassword;
+
+    // Persist new password into .env file if it exists
+    try {
+      if (fs.existsSync(envFile)) {
+        let envContent = fs.readFileSync(envFile, 'utf8');
+        if (/^ADMIN_PASSWORD=.*$/m.test(envContent)) {
+          envContent = envContent.replace(/^ADMIN_PASSWORD=.*$/m, `ADMIN_PASSWORD=${newPassword}`);
+        } else {
+          envContent += `\nADMIN_PASSWORD=${newPassword}\n`;
+        }
+        fs.writeFileSync(envFile, envContent, 'utf8');
+        console.log('[server] 🔑 Updated ADMIN_PASSWORD in .env file successfully');
+      }
+    } catch (e) {
+      console.warn('[server] Warning: Could not update .env file:', e.message);
+    }
+
+    // Refresh session token so the user remains authenticated without sudden disruption
+    const newToken = crypto.randomBytes(32).toString('hex');
+    await db.createSession(newToken, sess.username, SESSION_TTL);
+
+    return send(res, 200, {
+      ok: true,
+      message: 'Password changed successfully! Your new password has been saved.',
+      token: newToken,
+      username: sess.username,
+      updatedAt: new Date().toISOString()
+    }, { 'Set-Cookie': cookie(newToken, SESSION_TTL) });
   }
 
   return send(res, 404, { error: 'API route not found' });
